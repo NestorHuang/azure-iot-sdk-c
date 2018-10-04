@@ -1,23 +1,23 @@
 
 # IoTHubTransportAMQP Requirements
+
 ================
 
 ## Overview
 
 IoTHubTransportAMQP is the library that enables communications with the iothub system using the AMQP protocol over plain TLS connection.
 
-
 ## Dependencies
 
 iothubtransport_amqp_common
 azure_c_shared_utility
-
 
 ## Exposed API
 
 ```c
 static const TRANSPORT_PROVIDER* AMQP_Protocol(void);
 ```
+
   The following static functions are provided in the fields of the TRANSPORT_PROVIDER structure:
 
     - IoTHubTransportAMQP_SendMessageDisposition,
@@ -71,7 +71,6 @@ static XIO_HANDLE getTLSIOTransport(const char* fqdn, const AMQP_TRANSPORT_PROXY
 **SRS_IOTHUBTRANSPORTAMQP_09_003: [**If `platform_get_default_tlsio` returns NULL `getTLSIOTransport` shall return NULL.**]**
 **SRS_IOTHUBTRANSPORTAMQP_09_004: [**`getTLSIOTransport` shall return the `XIO_HANDLE` created using `xio_create`.**]**
 
-
 ## IoTHubTransportAMQP_Destroy
 
 ```c
@@ -80,15 +79,13 @@ static void IoTHubTransportAMQP_Destroy(TRANSPORT_LL_HANDLE handle)
 
 **SRS_IOTHUBTRANSPORTAMQP_09_005: [**IoTHubTransportAMQP_Destroy shall destroy the TRANSPORT_LL_HANDLE by calling into the IoTHubTransport_AMQP_Common_Destroy().**]**
 
-
 ## IoTHubTransportAMQP_Register
 
 ```c
-static IOTHUB_DEVICE_HANDLE IoTHubTransportAMQP_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle, PDLIST_ENTRY waitingToSend)
+static IOTHUB_DEVICE_HANDLE IoTHubTransportAMQP_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, PDLIST_ENTRY waitingToSend)
 ```
 
 **SRS_IOTHUBTRANSPORTAMQP_09_006: [**IoTHubTransportAMQP_Register shall register the device by calling into the IoTHubTransport_AMQP_Common_Register().**]**
-
 
 ## IoTHubTransportAMQP_Unregister
 
@@ -98,7 +95,6 @@ static void IoTHubTransportAMQP_Unregister(IOTHUB_DEVICE_HANDLE deviceHandle)
 
 **SRS_IOTHUBTRANSPORTAMQP_09_007: [**IoTHubTransportAMQP_Unregister shall unregister the device by calling into the IoTHubTransport_AMQP_Common_Unregister().**]**
 
-
 ## IoTHubTransportAMQP_Subscribe_DeviceTwin
 
 ```c
@@ -106,7 +102,6 @@ int IoTHubTransportAMQP_Subscribe_DeviceTwin(IOTHUB_DEVICE_HANDLE handle)
 ```
 
 **SRS_IOTHUBTRANSPORTAMQP_09_008: [**IoTHubTransportAMQP_Subscribe_DeviceTwin shall invoke IoTHubTransport_AMQP_Common_Subscribe_DeviceTwin() and return its result.**]**
-
 
 ## IoTHubTransportAMQP_Unsubscribe_DeviceTwin
 
@@ -116,7 +111,6 @@ void IoTHubTransportAMQP_Unsubscribe_DeviceTwin(IOTHUB_DEVICE_HANDLE handle)
 
 **SRS_IOTHUBTRANSPORTAMQP_09_009: [**IoTHubTransportAMQP_Unsubscribe_DeviceTwin shall invoke IoTHubTransport_AMQP_Common_Unsubscribe_DeviceTwin()**]**
 
-
 ## IoTHubTransportAMQP_Subscribe_DeviceMethod
 
 ```c
@@ -124,7 +118,6 @@ int IoTHubTransportAMQP_Subscribe_DeviceMethod(IOTHUB_DEVICE_HANDLE handle)
 ```
 
 **SRS_IOTHUBTRANSPORTAMQP_09_010: [**IoTHubTransportAMQP_Subscribe_DeviceMethod shall invoke IoTHubTransport_AMQP_Common_Subscribe_DeviceMethod() and return its result.**]**
-
 
 ## IoTHubTransportAMQP_Unsubscribe_DeviceMethod
 
@@ -142,7 +135,6 @@ static int IoTHubTransportAMQP_Subscribe(TRANSPORT_LL_HANDLE handle)
 ```
 
 **SRS_IOTHUBTRANSPORTAMQP_09_012: [**IoTHubTransportAMQP_Subscribe shall subscribe for D2C messages by calling into the IoTHubTransport_AMQP_Common_Subscribe().**]**
-
 
 ## IoTHubTransportAMQP_Unsubscribe
 

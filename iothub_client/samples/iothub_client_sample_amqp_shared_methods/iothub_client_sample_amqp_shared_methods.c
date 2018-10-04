@@ -31,12 +31,12 @@
 #include "iothubtransportamqp_websockets.h"
 #endif // SAMPLE_AMQP_OVER_WEBSOCKETS
 
-static const char* hubName = "[IoT Hub Name]";
-static const char* hubSuffix = "[IoT Hub Suffix]";
-static const char* deviceId1 = "[device id 1]";
-static const char* deviceId2 = "[device id 2]";
-static const char* deviceKey1 = "[device key 1]";
-static const char* deviceKey2 = "[device key 2]";
+static const char* hubName = "iot-test-sdk";
+static const char* hubSuffix = "azure-devices.net";
+static const char* deviceId1 = "current_test";
+static const char* deviceId2 = "validate_dev";
+static const char* deviceKey1 = "HgtEYTb93Qb9WGfFdtYICteCHPkX7sQ5Ca8rGJuLUps=";
+static const char* deviceKey2 = "aCw2y2K3bB+hKU7rqg4oasvEmXwM6nrsVrf7nqxSBHY=";
 
 static int DeviceMethodCallback(const char* method_name, const unsigned char* payload, size_t size, unsigned char** response, size_t* resp_size, void* userContextCallback)
 {
@@ -118,9 +118,9 @@ int main(void)
         {
             // Set any option that are neccessary.
             // For available options please see the iothub_sdk_options.md documentation
-            //bool traceOn = true;
-            //IoTHubDeviceClient_SetOption(device_handle1, OPTION_LOG_TRACE, &traceOn);
-            //IoTHubDeviceClient_SetOption(device_handle2, OPTION_LOG_TRACE, &traceOn);
+            bool traceOn = true;
+            IoTHubDeviceClient_SetOption(device_handle1, OPTION_LOG_TRACE, &traceOn);
+            IoTHubDeviceClient_SetOption(device_handle2, OPTION_LOG_TRACE, &traceOn);
 #ifdef SET_TRUSTED_CERT_IN_SAMPLES
             // Setting the Trusted Certificate.  This is only necessary on system without
             // built in certificate stores.

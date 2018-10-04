@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #endif
-
+#include <signal.h>
 #include <time.h>
 
 #if defined _MSC_VER

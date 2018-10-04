@@ -1,11 +1,11 @@
 # IoTHubTransport_AMQP_Common Requirements
+
 ================
 
 ## Overview
 
 This module provides an implementation of the transport layer of the IoT Hub client based on the AMQP API, which implements the AMQP protocol.  
 It is the base for the implentation of the actual respective AMQP transports, which will on their side provide the underlying I/O transport for this module.
-
 
 ## Dependencies
 
@@ -15,7 +15,6 @@ azure-c-shared-utility
 azure-uamqp-c
 iothubtransport_amqp_connection
 iothubtransport_amqp_device
-
 
 ## Exposed API
 
@@ -36,18 +35,17 @@ extern void IoTHubTransport_AMQP_Common_DoWork(TRANSPORT_LL_HANDLE handle, IOTHU
 extern IOTHUB_CLIENT_RESULT IoTHubTransport_AMQP_Common_GetSendStatus(IOTHUB_DEVICE_HANDLE handle, IOTHUB_CLIENT_STATUS* iotHubClientStatus);
 extern IOTHUB_CLIENT_RESULT IoTHubTransport_AMQP_Common_SetOption(TRANSPORT_LL_HANDLE handle, const char* option, const void* value);
 extern int IoTHubTransport_AMQP_Common_SetRetryPolicy(TRANSPORT_LL_HANDLE handle, IOTHUB_CLIENT_RETRY_POLICY retryPolicy, size_t retryTimeoutLimitInSeconds);
-extern IOTHUB_DEVICE_HANDLE IoTHubTransport_AMQP_Common_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle, PDLIST_ENTRY waitingToSend);
+extern IOTHUB_DEVICE_HANDLE IoTHubTransport_AMQP_Common_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, PDLIST_ENTRY waitingToSend);
 extern void IoTHubTransport_AMQP_Common_Unregister(IOTHUB_DEVICE_HANDLE deviceHandle);
 extern STRING_HANDLE IoTHubTransport_AMQP_Common_GetHostname(TRANSPORT_LL_HANDLE handle);
 
 ```
 
-
 Note: `instance` refers to the structure that holds the current state and control parameters of the transport. 
 In each function (other than IoTHubTransport_AMQP_Common_Create) it shall derive from the TRANSPORT_LL_HANDLE handle passed as argument.  
 
-
 ### IoTHubTransport_AMQP_Common_GetHostname
+
 ```c
  STRING_HANDLE IoTHubTransport_AMQP_Common_GetHostname(TRANSPORT_LL_HANDLE handle)
 ```
@@ -56,7 +54,6 @@ IoTHubTransport_AMQP_Common_GetHostname provides a STRING_HANDLE containing the 
 
 **SRS_IOTHUBTRANSPORT_AMQP_COMMON_02_001: [**If `handle` is NULL, `IoTHubTransport_AMQP_Common_GetHostname` shall return NULL.**]**
 **SRS_IOTHUBTRANSPORT_AMQP_COMMON_02_002: [**IoTHubTransport_AMQP_Common_GetHostname shall return a copy of `instance->iothub_target_fqdn`.**]**
-
 
 ### IoTHubTransport_AMQP_Common_Create
 
@@ -224,12 +221,12 @@ This handler is provided to each registered device when messenger_create() is in
 ### IoTHubTransport_AMQP_Common_Register
 
 ```c
-IOTHUB_DEVICE_HANDLE IoTHubTransport_AMQP_Common_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle, PDLIST_ENTRY waitingToSend)
+IOTHUB_DEVICE_HANDLE IoTHubTransport_AMQP_Common_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, PDLIST_ENTRY waitingToSend)
 ```
 
 This function registers a device with the transport.  The AMQP transport only supports a single device established on create, so this function will prevent multiple devices from being registered.
 
-**SRS_IOTHUBTRANSPORT_AMQP_COMMON_17_005: [**If `handle`, `device`, `iotHubClientHandle` or `waitingToSend` is NULL, IoTHubTransport_AMQP_Common_Register shall return NULL**]**
+**SRS_IOTHUBTRANSPORT_AMQP_COMMON_17_005: [**If `handle`, `device` or `waitingToSend` is NULL, IoTHubTransport_AMQP_Common_Register shall return NULL**]**
 **SRS_IOTHUBTRANSPORT_AMQP_COMMON_03_002: [**IoTHubTransport_AMQP_Common_Register shall return NULL if `device->deviceId` is NULL.**]**
 **SRS_IOTHUBTRANSPORT_AMQP_COMMON_09_064: [**If the device is already registered, IoTHubTransport_AMQP_Common_Register shall fail and return NULL.**]**
 **SRS_IOTHUBTRANSPORT_AMQP_COMMON_09_065: [**IoTHubTransport_AMQP_Common_Register shall fail and return NULL if the device is not using an authentication mode compatible with the currently used by the transport.**]**

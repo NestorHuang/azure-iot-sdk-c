@@ -106,7 +106,6 @@ static XIO_HANDLE getWebSocketsIOTransport(const char* fqdn, const AMQP_TRANSPOR
 **SRS_IOTHUBTRANSPORTAMQP_WS_09_003: [**If `io_interface_description` is NULL getWebSocketsIOTransport shall return NULL.**]**
 **SRS_IOTHUBTRANSPORTAMQP_WS_09_004: [**getWebSocketsIOTransport shall return the XIO_HANDLE created using xio_create().**]**
 
-
 ## IoTHubTransportAMQP_WS_Destroy
 
 ```c
@@ -115,11 +114,10 @@ static void IoTHubTransportAMQP_WS_Destroy(TRANSPORT_LL_HANDLE handle)
 
 **SRS_IOTHUBTRANSPORTAMQP_WS_09_005: [**IoTHubTransportAMQP_WS_Destroy shall destroy the TRANSPORT_LL_HANDLE by calling into the IoTHubTransport_AMQP_Common_Destroy().**]**
 
-
 ## IoTHubTransportAMQP_WS_Register
 
 ```c
-static IOTHUB_DEVICE_HANDLE IoTHubTransportAMQP_WS_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, IOTHUB_CLIENT_LL_HANDLE iotHubClientHandle, PDLIST_ENTRY waitingToSend)
+static IOTHUB_DEVICE_HANDLE IoTHubTransportAMQP_WS_Register(TRANSPORT_LL_HANDLE handle, const IOTHUB_DEVICE_CONFIG* device, PDLIST_ENTRY waitingToSend)
 ```
 
 **SRS_IOTHUBTRANSPORTAMQP_WS_09_006: [**IoTHubTransportAMQP_WS_Register shall register the device by calling into the IoTHubTransport_AMQP_Common_Register().**]**
