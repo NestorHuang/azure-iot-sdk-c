@@ -220,9 +220,9 @@ static void IoTHubTransportMqtt_WS_Unsubscribe_InputQueue(IOTHUB_DEVICE_HANDLE h
     (void)handle;
 }
 
-static int IotHubTransportMqtt_WS_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+static int IotHubTransportMqtt_WS_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
-    return IoTHubTransport_MQTT_SetTransportCallbacks(handle, cb_info, ctx);
+    return IoTHubTransport_MQTT_SetCallbackContext(handle, ctx);
 }
 
 /* Codes_SRS_IOTHUB_MQTT_WEBSOCKET_TRANSPORT_07_011: [ This function shall return a pointer to a structure of type TRANSPORT_PROVIDER having the following values for its fields:
@@ -259,7 +259,7 @@ static TRANSPORT_PROVIDER thisTransportProvider_WebSocketsOverTls = {
     IoTHubTransportMqtt_WS_GetSendStatus,
     IoTHubTransportMqtt_WS_Subscribe_InputQueue,
     IoTHubTransportMqtt_WS_Unsubscribe_InputQueue,
-    IotHubTransportMqtt_WS_SetTransportCallbacks
+    IotHubTransportMqtt_WS_SetCallbackContext
 };
 
 const TRANSPORT_PROVIDER* MQTT_WebSocket_Protocol(void)

@@ -3390,24 +3390,18 @@ void IoTHubTransport_MQTT_Common_Unsubscribe_InputQueue(IOTHUB_DEVICE_HANDLE han
     }
 }
 
-int IoTHubTransport_MQTT_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+int IoTHubTransport_MQTT_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
     int result;
-    if (handle == NULL || cb_info == NULL)
+    if (handle == NULL)
     {
-        LogError("Invalid parameter specified handle: %p, cb_info: %p", handle, cb_info);
-        result = __FAILURE__;
-    }
-    else if (IoTHub_Transport_ValidateCallbacks(cb_info) != 0)
-    {
-        LogError("failure checking transport callbacks");
+        LogError("Invalid parameter specified handle: %p", handle);
         result = __FAILURE__;
     }
     else
     {
         MQTTTRANSPORT_HANDLE_DATA* transport_data = (MQTTTRANSPORT_HANDLE_DATA*)handle;
         transport_data->transport_ctx = ctx;
-        memcpy(&transport_data->transport_callbacks, cb_info, sizeof(TRANSPORT_CALLBACKS_INFO) );
         result = 0;
     }
     return result;

@@ -88,7 +88,7 @@ extern "C"
     typedef int(*pfIoTHubTransport_DeviceMethod_Response)(IOTHUB_DEVICE_HANDLE handle, METHOD_HANDLE methodId, const unsigned char* response, size_t response_size, int status_response);
     typedef int(*pfIoTHubTransport_Subscribe_InputQueue)(IOTHUB_DEVICE_HANDLE handle);
     typedef void(*pfIoTHubTransport_Unsubscribe_InputQueue)(IOTHUB_DEVICE_HANDLE handle);
-    typedef int(*pfIoTHubTransport_SetTransportCallbacks)(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx);
+    typedef int(*pfIoTHubTransport_SetCallbackContext)(TRANSPORT_LL_HANDLE handle, void* ctx);
 
 #define TRANSPORT_PROVIDER_FIELDS                                                   \
 pfIotHubTransport_SendMessageDisposition IoTHubTransport_SendMessageDisposition;  \
@@ -111,7 +111,7 @@ pfIoTHubTransport_SetRetryPolicy IoTHubTransport_SetRetryPolicy;                
 pfIoTHubTransport_GetSendStatus IoTHubTransport_GetSendStatus;                      \
 pfIoTHubTransport_Subscribe_InputQueue IoTHubTransport_Subscribe_InputQueue;        \
 pfIoTHubTransport_Unsubscribe_InputQueue IoTHubTransport_Unsubscribe_InputQueue;    \
-pfIoTHubTransport_SetTransportCallbacks IoTHubTransport_SetTransportCallbacks     /*there's an intentional missing ; on this line*/
+pfIoTHubTransport_SetCallbackContext IoTHubTransport_SetCallbackContext     /*there's an intentional missing ; on this line*/
 
     struct TRANSPORT_PROVIDER_TAG
     {

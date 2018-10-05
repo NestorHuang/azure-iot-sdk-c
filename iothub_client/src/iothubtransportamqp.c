@@ -171,9 +171,9 @@ static void IotHubTransportAMQP_Unsubscribe_InputQueue(IOTHUB_DEVICE_HANDLE hand
     LogError("AMQP does not support input queues");
 }
 
-static int IoTHubTransportAMQP_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+static int IoTHubTransportAMQP_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
-    return IoTHubTransport_AMQP_SetTransportCallbacks(handle, cb_info, ctx);
+    return IoTHubTransport_AMQP_SetCallbackContext(handle, ctx);
 }
 
 static TRANSPORT_PROVIDER thisTransportProvider =
@@ -198,7 +198,7 @@ static TRANSPORT_PROVIDER thisTransportProvider =
     IoTHubTransportAMQP_GetSendStatus,              /*pfIoTHubTransport_GetSendStatus IoTHubTransport_GetSendStatus;*/
     IotHubTransportAMQP_Subscribe_InputQueue,       /*pfIoTHubTransport_Subscribe_InputQueue IoTHubTransport_Subscribe_InputQueue; */
     IotHubTransportAMQP_Unsubscribe_InputQueue,     /*pfIoTHubTransport_Unsubscribe_InputQueue IoTHubTransport_Unsubscribe_InputQueue; */
-    IoTHubTransportAMQP_SetTransportCallbacks       /*pfIoTHubTransport_SetTransportCallbacks IoTHubTransport_SetTransportCallbacks; */
+    IoTHubTransportAMQP_SetCallbackContext          /*pfIoTHubTransport_SetTransportCallbacks IoTHubTransport_SetTransportCallbacks; */
 };
 
 /* Codes_SRS_IOTHUBTRANSPORTAMQP_09_019: [This function shall return a pointer to a structure of type TRANSPORT_PROVIDER having the following values for it's fields:

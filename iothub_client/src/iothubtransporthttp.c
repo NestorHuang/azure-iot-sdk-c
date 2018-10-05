@@ -2499,31 +2499,18 @@ static void IotHubTransportHttp_Unsubscribe_InputQueue(IOTHUB_DEVICE_HANDLE hand
     LogError("HTTP does not support input queues");
 }
 
-int IoTHubTransportHttp_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+int IoTHubTransportHttp_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
     int result;
-    if (handle == NULL || cb_info == NULL)
+    if (handle == NULL)
     {
-        LogError("Invalid parameter specified handle: %p, cb_info: %p", handle, cb_info);
-        result = __FAILURE__;
-    }
-    else if (IoTHub_Transport_ValidateCallbacks(cb_info) != 0)
-    {
-        LogError("failure checking transport callbacks");
+        LogError("Invalid parameter specified handle: %p", handle);
         result = __FAILURE__;
     }
     else
     {
         HTTPTRANSPORT_HANDLE_DATA* handleData = (HTTPTRANSPORT_HANDLE_DATA*)handle;
         handleData->transport_ctx = ctx;
-        handleData->transport_callbacks.msg_input_cb = cb_info->msg_input_cb;
-        handleData->transport_callbacks.msg_cb = cb_info->msg_cb;
-        handleData->transport_callbacks.connection_status_cb = cb_info->connection_status_cb;
-        handleData->transport_callbacks.send_complete_cb = cb_info->send_complete_cb;
-        handleData->transport_callbacks.prod_info_cb = cb_info->prod_info_cb;
-        handleData->transport_callbacks.twin_rpt_state_complete_cb = cb_info->twin_rpt_state_complete_cb;
-        handleData->transport_callbacks.twin_retrieve_prop_complete_cb = cb_info->twin_retrieve_prop_complete_cb;
-        handleData->transport_callbacks.method_complete_cb = cb_info->method_complete_cb;
         result = 0;
     }
     return result;
@@ -2552,7 +2539,7 @@ static TRANSPORT_PROVIDER thisTransportProvider =
     IoTHubTransportHttp_GetSendStatus,              /*pfIoTHubTransport_GetSendStatus IoTHubTransport_GetSendStatus;*/
     IotHubTransportHttp_Subscribe_InputQueue,       /*pfIoTHubTransport_Subscribe_InputQueue IoTHubTransport_Subscribe_InputQueue; */
     IotHubTransportHttp_Unsubscribe_InputQueue,     /*pfIoTHubTransport_Unsubscribe_InputQueue IoTHubTransport_Unsubscribe_InputQueue; */
-    IoTHubTransportHttp_SetTransportCallbacks
+    IoTHubTransportHttp_SetCallbackContext          /*pfIoTHubTransport_SetTransportCallbacks IoTHubTransport_SetTransportCallbacks; */
 };
 
 const TRANSPORT_PROVIDER* HTTP_Protocol(void)

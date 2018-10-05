@@ -268,7 +268,7 @@ static void setTransportProtocol(IOTHUB_CLIENT_CORE_LL_HANDLE_DATA* handleData, 
     handleData->IoTHubTransport_DeviceMethod_Response = protocol->IoTHubTransport_DeviceMethod_Response;
     handleData->IoTHubTransport_Subscribe_InputQueue = protocol->IoTHubTransport_Subscribe_InputQueue;
     handleData->IoTHubTransport_Unsubscribe_InputQueue = protocol->IoTHubTransport_Unsubscribe_InputQueue;
-    handleData->IoTHubTransport_SetTransportCallbacks = protocol->IoTHubTransport_SetTransportCallbacks;
+    handleData->IoTHubTransport_SetCallbackContext = protocol->IoTHubTransport_SetCallbackContext;
 }
 
 static bool is_event_equal(IOTHUB_EVENT_CALLBACK *event_callback, const char *input_name)
@@ -853,15 +853,7 @@ static IOTHUB_CLIENT_CORE_LL_HANDLE_DATA* initialize_iothub_client(const IOTHUB_
                     result->transportHandle = device_config->transportHandle;
                     setTransportProtocol(result, (TRANSPORT_PROVIDER*)device_config->protocol());
 
-                    if (result->IoTHubTransport_SetTransportCallbacks(result->transportHandle, &transport_cb, result) != 0)
-                    {
-                        LogError("unable to set transport callbacks");
-                        IoTHubClient_Auth_Destroy(result->authorization_module);
-                        STRING_delete(product_info);
-                        free(result);
-                        result = NULL;
-                    }
-                    else if ((transport_hostname = result->IoTHubTransport_GetHostname(result->transportHandle)) == NULL)
+                    if ((transport_hostname = result->IoTHubTransport_GetHostname(result->transportHandle)) == NULL)
                     {
                         /*Codes_SRS_IOTHUBCLIENT_LL_02_097: [ If creating the data structures fails or instantiating the IOTHUB_CLIENT_LL_UPLOADTOBLOB_HANDLE fails then IoTHubClientCore_LL_CreateWithTransport shall fail and return NULL. ]*/
                         LogError("unable to determine the transport IoTHub name");
@@ -1980,42 +1972,49 @@ void IoTHubClientCore_LL_DoWork(IOTHUB_CLIENT_CORE_LL_HANDLE iotHubClientHandle)
         IOTHUB_CLIENT_CORE_LL_HANDLE_DATA* handleData = (IOTHUB_CLIENT_CORE_LL_HANDLE_DATA*)iotHubClientHandle;
         DoTimeouts(handleData);
 
-        /*Codes_SRS_IOTHUBCLIENT_LL_07_008: [ IoTHubClientCore_LL_DoWork shall iterate the message queue and execute the underlying transports IoTHubTransport_ProcessItem function for each item. ] */
-        DLIST_ENTRY* client_item = handleData->iot_msg_queue.Flink;
-        while (client_item != &(handleData->iot_msg_queue)) /*while we are not at the end of the list*/
+        if (handleData->IoTHubTransport_SetCallbackContext(handleData->transportHandle, handleData) != 0)
         {
-            PDLIST_ENTRY next_item = client_item->Flink;
+            LogError("unable to set transport callback context");
+        }
+        else
+        {
+            /*Codes_SRS_IOTHUBCLIENT_LL_07_008: [ IoTHubClientCore_LL_DoWork shall iterate the message queue and execute the underlying transports IoTHubTransport_ProcessItem function for each item. ] */
+            DLIST_ENTRY* client_item = handleData->iot_msg_queue.Flink;
+            while (client_item != &(handleData->iot_msg_queue)) /*while we are not at the end of the list*/
+            {
+                PDLIST_ENTRY next_item = client_item->Flink;
 
-            IOTHUB_DEVICE_TWIN* queue_data = containingRecord(client_item, IOTHUB_DEVICE_TWIN, entry);
-            IOTHUB_IDENTITY_INFO identity_info;
-            identity_info.device_twin = queue_data;
-            IOTHUB_PROCESS_ITEM_RESULT process_results =  handleData->IoTHubTransport_ProcessItem(handleData->transportHandle, IOTHUB_TYPE_DEVICE_TWIN, &identity_info);
-            if (process_results == IOTHUB_PROCESS_CONTINUE || process_results == IOTHUB_PROCESS_NOT_CONNECTED)
-            {
-                /*Codes_SRS_IOTHUBCLIENT_LL_07_010: [ If 'IoTHubTransport_ProcessItem' returns IOTHUB_PROCESS_CONTINUE or IOTHUB_PROCESS_NOT_CONNECTED IoTHubClientCore_LL_DoWork shall continue on to call the underlaying layer's _DoWork function. ]*/
-                break;
-            }
-            else
-            {
-                DList_RemoveEntryList(client_item);
-                if (process_results == IOTHUB_PROCESS_OK)
+                IOTHUB_DEVICE_TWIN* queue_data = containingRecord(client_item, IOTHUB_DEVICE_TWIN, entry);
+                IOTHUB_IDENTITY_INFO identity_info;
+                identity_info.device_twin = queue_data;
+                IOTHUB_PROCESS_ITEM_RESULT process_results =  handleData->IoTHubTransport_ProcessItem(handleData->transportHandle, IOTHUB_TYPE_DEVICE_TWIN, &identity_info);
+                if (process_results == IOTHUB_PROCESS_CONTINUE || process_results == IOTHUB_PROCESS_NOT_CONNECTED)
                 {
-                    /*Codes_SRS_IOTHUBCLIENT_LL_07_011: [ If 'IoTHubTransport_ProcessItem' returns IOTHUB_PROCESS_OK IoTHubClientCore_LL_DoWork shall add the IOTHUB_DEVICE_TWIN to the ack queue. ]*/
-                    DList_InsertTailList(&(iotHubClientHandle->iot_ack_queue), &(queue_data->entry));
+                    /*Codes_SRS_IOTHUBCLIENT_LL_07_010: [ If 'IoTHubTransport_ProcessItem' returns IOTHUB_PROCESS_CONTINUE or IOTHUB_PROCESS_NOT_CONNECTED IoTHubClientCore_LL_DoWork shall continue on to call the underlaying layer's _DoWork function. ]*/
+                    break;
                 }
                 else
                 {
-                    /*Codes_SRS_IOTHUBCLIENT_LL_07_012: [ If 'IoTHubTransport_ProcessItem' returns any other value IoTHubClientCore_LL_DoWork shall destroy the IOTHUB_DEVICE_TWIN item. ]*/
-                    LogError("Failure queue processing item");
-                    device_twin_data_destroy(queue_data);
+                    DList_RemoveEntryList(client_item);
+                    if (process_results == IOTHUB_PROCESS_OK)
+                    {
+                        /*Codes_SRS_IOTHUBCLIENT_LL_07_011: [ If 'IoTHubTransport_ProcessItem' returns IOTHUB_PROCESS_OK IoTHubClientCore_LL_DoWork shall add the IOTHUB_DEVICE_TWIN to the ack queue. ]*/
+                        DList_InsertTailList(&(iotHubClientHandle->iot_ack_queue), &(queue_data->entry));
+                    }
+                    else
+                    {
+                        /*Codes_SRS_IOTHUBCLIENT_LL_07_012: [ If 'IoTHubTransport_ProcessItem' returns any other value IoTHubClientCore_LL_DoWork shall destroy the IOTHUB_DEVICE_TWIN item. ]*/
+                        LogError("Failure queue processing item");
+                        device_twin_data_destroy(queue_data);
+                    }
                 }
+                // Move along to the next item
+                client_item = next_item;
             }
-            // Move along to the next item
-            client_item = next_item;
-        }
 
-        /*Codes_SRS_IOTHUBCLIENT_LL_02_021: [Otherwise, IoTHubClientCore_LL_DoWork shall invoke the underlaying layer's _DoWork function.]*/
-        handleData->IoTHubTransport_DoWork(handleData->transportHandle);
+            /*Codes_SRS_IOTHUBCLIENT_LL_02_021: [Otherwise, IoTHubClientCore_LL_DoWork shall invoke the underlaying layer's _DoWork function.]*/
+            handleData->IoTHubTransport_DoWork(handleData->transportHandle);
+        }
     }
 }
 

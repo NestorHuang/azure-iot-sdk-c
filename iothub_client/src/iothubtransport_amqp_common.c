@@ -2477,24 +2477,18 @@ IOTHUB_CLIENT_RESULT IoTHubTransport_AMQP_Common_SendMessageDisposition(MESSAGE_
     return result;
 }
 
-int IoTHubTransport_AMQP_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+int IoTHubTransport_AMQP_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
     int result;
-    if (handle == NULL || cb_info == NULL)
+    if (handle == NULL)
     {
-        LogError("Invalid parameter specified handle: %p, cb_info: %p", handle, cb_info);
-        result = __FAILURE__;
-    }
-    else if (IoTHub_Transport_ValidateCallbacks(cb_info) != 0)
-    {
-        LogError("failure checking transport callbacks");
+        LogError("Invalid parameter specified handle: %p", handle);
         result = __FAILURE__;
     }
     else
     {
         AMQP_TRANSPORT_INSTANCE* instance = (AMQP_TRANSPORT_INSTANCE*)handle;
         instance->transport_ctx = ctx;
-        memcpy(&instance->transport_callbacks, cb_info, sizeof(TRANSPORT_CALLBACKS_INFO));
         result = 0;
     }
     return result;

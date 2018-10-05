@@ -163,9 +163,9 @@ static void IotHubTransportMqtt_Unsubscribe_InputQueue(IOTHUB_DEVICE_HANDLE hand
     IoTHubTransport_MQTT_Common_Unsubscribe_InputQueue(handle);
 }
 
-static int IotHubTransportMqtt_SetTransportCallbacks(TRANSPORT_LL_HANDLE handle, TRANSPORT_CALLBACKS_INFO* cb_info, void* ctx)
+static int IotHubTransportMqtt_SetCallbackContext(TRANSPORT_LL_HANDLE handle, void* ctx)
 {
-    return IoTHubTransport_MQTT_SetTransportCallbacks(handle, cb_info, ctx);
+    return IoTHubTransport_MQTT_SetCallbackContext(handle, ctx);
 }
 
 static TRANSPORT_PROVIDER myfunc =
@@ -189,8 +189,8 @@ static TRANSPORT_PROVIDER myfunc =
     IoTHubTransportMqtt_SetRetryPolicy,             /*pfIoTHubTransport_DoWork IoTHubTransport_SetRetryPolicy;*/
     IoTHubTransportMqtt_GetSendStatus,              /*pfIoTHubTransport_GetSendStatus IoTHubTransport_GetSendStatus;*/
     IotHubTransportMqtt_Subscribe_InputQueue,       /*pfIoTHubTransport_Subscribe_InputQueue IoTHubTransport_Subscribe_InputQueue; */
-    IotHubTransportMqtt_Unsubscribe_InputQueue,      /*pfIoTHubTransport_Unsubscribe_InputQueue IoTHubTransport_Unsubscribe_InputQueue; */
-    IotHubTransportMqtt_SetTransportCallbacks       /*pfIoTHubTransport_SetTransportCallbacks IoTHubTransport_SetTransportCallbacks; */
+    IotHubTransportMqtt_Unsubscribe_InputQueue,     /*pfIoTHubTransport_Unsubscribe_InputQueue IoTHubTransport_Unsubscribe_InputQueue; */
+    IotHubTransportMqtt_SetCallbackContext          /*pfIoTHubTransport_SetCallbackContext IoTHubTransport_SetCallbackContext; */
 };
 
 /* Codes_SRS_IOTHUB_MQTT_TRANSPORT_07_022: [This function shall return a pointer to a structure of type TRANSPORT_PROVIDER */
